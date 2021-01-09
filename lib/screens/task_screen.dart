@@ -1,19 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_list_flutter/models/task.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_list_flutter/models/task_data.dart';
 import 'package:to_do_list_flutter/screens/add_task_screen.dart';
 import 'package:to_do_list_flutter/widgets/tasks_list.dart';
 
 // Main widget of the app
-class TasksScreen extends StatefulWidget {
-  @override
-  _TasksScreenState createState() => _TasksScreenState();
-}
-
-class _TasksScreenState extends State<TasksScreen> {
-  Widget buildBottomSheet;
-
-  List<Task> tasks = [];
-
+class TasksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,25 +19,20 @@ class _TasksScreenState extends State<TasksScreen> {
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
+            // AddTaskScreen inside bottom sheet
             builder: (context) => SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom),
-                // AddTaskScreen widget as a child, which takes a function as an argument
-                child: AddTaskScreen((newTaskTitle) {
-                  setState(() {
-                    tasks.add(Task(name: newTaskTitle));
-                  });
-                  Navigator.pop(context);
-                }),
+                child: AddTaskScreen(),
               ),
             ),
           );
         },
       ),
 
+      // Main column
       body: Column(
-        // main column
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
@@ -73,7 +60,7 @@ class _TasksScreenState extends State<TasksScreen> {
                       fontWeight: FontWeight.w700),
                 ),
                 Text(
-                  '${tasks.length} Tasks',
+                  '${Provider.of<TaskData>(context).taskCount} Tasks',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -97,7 +84,7 @@ class _TasksScreenState extends State<TasksScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   // widget TasksList
-                  child: TasksList(tasks),
+                  child: TasksList(),
                 ),
               ),
             ),
